@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .formulas {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9f7ef;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+        }
+        .result-item {
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stat-group {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .stat-group h4 {
+            margin: 0 0 10px 0;
+            color: #555;
+            font-size: 14px;
+        }
+        .calculation-details {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pokémon Stats Calculator</h1>
+        
+        <div class="formulas">
+            <h3>Formulas Used:</h3>
+            <p><strong>HP:</strong> HP = ⌊((2B + 31) × L) / 100⌋ + L + 10 + SP<sub>HP</sub></p>
+            <p><strong>Attack/Sp.Attack/Defense/Sp.Defense/Speed:</strong> Stat = ⌊((2B + 31) × L / 100⌋ + 5 + SP) × N⌋</p>
+            <p><small>Where: B = base stat, L = level, IV = 31 (fixed), SP = stat points, N = nature multiplier</small></p>
+        </div>
+
+        <div class="two-column">
+            <div>
+                <h3>Input Parameters</h3>
+                
+                <div class="form-group">
+                    <label for="level">Level (L):</label>
+                    <input type="number" id="level" value="50" min="1" max="100">
+                </div>
+                
+                <h4>HP</h4>
+                <div class="form-group">
+                    <label for="baseStatHP">Base Stat (HP):</label>
+                    <input type="number" id="baseStatHP" value="100" min="1" max="255">
+                </div>
+                <div class="form-group">
+                    <label for="statPointsHP">Stat Points HP (SP<sub>HP</sub>):</label>
+                    <input type="number" id="statPointsHP" value="252" min="0" max="252">
+                </div>
+                
+                <h4>Other Stats</h4>
+                <div class="stats-grid">
+                    <div class="stat-group">
+                        <h4>Attack</h4>
+                        <label for="baseStatAttack">Base:</label>
+                        <input type="number" id="baseStatAttack" value="80" min="1" max="255">
+                        <label for="statPointsAttack">SP:</label>
+                        <input type="number" id="statPointsAttack" value="252" min="0" max="252">
+                        <label for="natureAttack">Nature:</label>
+                        <select id="natureAttack">
+                            <option value="0.9">Hindering (0.9)</option>
+                            <option value="1.0" selected>Neutral (1.0)</option>
+                            <option value="1.1">Boosting (1.1)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="stat-group">
+                        <h4>Special Attack</h4>
+                        <label for="baseStatSpAttack">Base:</label>
+                        <input type="number" id="baseStatSpAttack" value="100" min="1" max="255">
+                        <label for="statPointsSpAttack">SP:</label>
+                        <input type="number" id="statPointsSpAttack" value="0" min="0" max="252">
+                        <label for="natureSpAttack">Nature:</label>
+                        <select id="natureSpAttack">
+                            <option value="0.9">Hindering (0.9)</option>
+                            <option value="1.0" selected>Neutral (1.0)</option>
+                            <option value="1.1">Boosting (1.1)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="stat-group">
+                        <h4>Defense</h4>
+                        <label for="baseStatDefense">Base:</label>
+                        <input type="number" id="baseStatDefense" value="75" min="1" max="255">
+                        <label for="statPointsDefense">SP:</label>
+                        <input type="number" id="statPointsDefense" value="0" min="0" max="252">
+                        <label for="natureDefense">Nature:</label>
+                        <select id="natureDefense">
+                            <option value="0.9">Hindering (0.9)</option>
+                            <option value="1.0" selected>Neutral (1.0)</option>
+                            <option value="1.1">Boosting (1.1)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="stat-group">
+                        <h4>Special Defense</h4>
+                        <label for="baseStatSpDefense">Base:</label>
+                        <input type="number" id="baseStatSpDefense" value="85" min="1" max="255">
+                        <label for="statPointsSpDefense">SP:</label>
+                        <input type="number" id="statPointsSpDefense" value="0" min="0" max="252">
+                        <label for="natureSpDefense">Nature:</label>
+                        <select id="natureSpDefense">
+                            <option value="0.9">Hindering (0.9)</option>
+                            <option value="1.0" selected>Neutral (1.0)</option>
+                            <option value="1.1">Boosting (1.1)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="stat-group">
+                        <h4>Speed</h4>
+                        <label for="baseStatSpeed">Base:</label>
+                        <input type="number" id="baseStatSpeed" value="90" min="1" max="255">
+                        <label for="statPointsSpeed">SP:</label>
+                        <input type="number" id="statPointsSpeed" value="4" min="0" max="252">
+                        <label for="natureSpeed">Nature:</label>
+                        <select id="natureSpeed">
+                            <option value="0.9">Hindering (0.9)</option>
+                            <option value="1.0" selected>Neutral (1.0)</option>
+                            <option value="1.1">Boosting (1.1)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button onclick="calculate()">Calculate Stats</button>
+                <button onclick="clearResults()">Clear</button>
+            </div>
+            
+            <div>
+                <h3>Results</h3>
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Get input values
+            const baseStatHP = parseInt(document.getElementById('baseStatHP').value);
+            const level = parseInt(document.getElementById('level').value);
+            const statPointsHP = parseInt(document.getElementById('statPointsHP').value);
+            
+            // Get all other stat values
+            const stats = {
+                'Attack': {
+                    base: parseInt(document.getElementById('baseStatAttack').value),
+                    sp: parseInt(document.getElementById('statPointsAttack').value),
+                    nature: parseFloat(document.getElementById('natureAttack').value)
+                },
+                'Special Attack': {
+                    base: parseInt(document.getElementById('baseStatSpAttack').value),
+                    sp: parseInt(document.getElementById('statPointsSpAttack').value),
+                    nature: parseFloat(document.getElementById('natureSpAttack').value)
+                },
+                'Defense': {
+                    base: parseInt(document.getElementById('baseStatDefense').value),
+                    sp: parseInt(document.getElementById('statPointsDefense').value),
+                    nature: parseFloat(document.getElementById('natureDefense').value)
+                },
+                'Special Defense': {
+                    base: parseInt(document.getElementById('baseStatSpDefense').value),
+                    sp: parseInt(document.getElementById('statPointsSpDefense').value),
+                    nature: parseFloat(document.getElementById('natureSpDefense').value)
+                },
+                'Speed': {
+                    base: parseInt(document.getElementById('baseStatSpeed').value),
+                    sp: parseInt(document.getElementById('statPointsSpeed').value),
+                    nature: parseFloat(document.getElementById('natureSpeed').value)
+                }
+            };
+            
+            // Validate inputs
+            if (isNaN(baseStatHP) || isNaN(level) || isNaN(statPointsHP)) {
+                alert('Please enter valid numbers for HP fields');
+                return;
+            }
+            
+            for (const statName in stats) {
+                if (isNaN(stats[statName].base) || isNaN(stats[statName].sp) || isNaN(stats[statName].nature)) {
+                    alert(`Please enter valid numbers for ${statName} fields`);
+                    return;
+                }
+            }
+            
+            // Calculate HP using: HP = ⌊((2B + 31) × L) / 100⌋ + L + 10 + SP_HP
+            const hpBase = Math.floor(((2 * baseStatHP + 31) * level) / 100);
+            const hp = hpBase + level + 10 + statPointsHP;
+            
+            // Calculate all other stats using: Stat = ⌊((2B + 31) × L / 100⌋ + 5 + SP) × N⌋
+            const calculatedStats = {};
+            for (const statName in stats) {
+                const stat = stats[statName];
+                const statBase = Math.floor(((2 * stat.base + 31) * level) / 100);
+                calculatedStats[statName] = {
+                    final: Math.floor((statBase + 5 + stat.sp) * stat.nature),
+                    base: statBase,
+                    beforeNature: statBase + 5 + stat.sp
+                };
+            }
+            
+            // Display results
+            const resultsDiv = document.getElementById('results');
+            let resultsHTML = `
+                <div class="result-item">
+                    <strong>HP:</strong> ${hp}
+                    <div class="calculation-details">
+                        ⌊((2×${baseStatHP} + 31) × ${level}) / 100⌋ + ${level} + 10 + ${statPointsHP}<br>
+                        = ${hpBase} + ${level} + 10 + ${statPointsHP} = ${hp}
+                    </div>
+                </div>
+            `;
+            
+            for (const statName in calculatedStats) {
+                const stat = stats[statName];
+                const calc = calculatedStats[statName];
+                resultsHTML += `
+                    <div class="result-item">
+                        <strong>${statName}:</strong> ${calc.final}
+                        <div class="calculation-details">
+                            ⌊((2×${stat.base} + 31) × ${level} / 100⌋ + 5 + ${stat.sp}) × ${stat.nature}⌋<br>
+                            = ⌊(${calc.base} + 5 + ${stat.sp}) × ${stat.nature}⌋<br>
+                            = ⌊${calc.beforeNature} × ${stat.nature}⌋ = ${calc.final}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultsDiv.innerHTML = resultsHTML;
+            resultsDiv.classList.add('results');
+        }
+        
+        function clearResults() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            resultsDiv.classList.remove('results');
+        }
+        
+        // Calculate on page load with default values
+        window.onload = function() {
+            calculate();
+        };
+        
+        // Add Enter key support for inputs
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>
